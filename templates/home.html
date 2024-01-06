@@ -9,15 +9,15 @@
       #banner {
         height: 360px;
         width: 100%;
-        object-fit: cover
+        object-fit: cover;
+        margin-bottom:16px;
     </style>
   </head>
   <body>
+    {% include 'nav.html' %}
+    <img class="img-fluid" id="banner" src="https://26c28395-e43c-4a89-b186-ab5bb78c8c66-00-2i79fv7dsyyor.sisko.replit.dev/static/education-bg.jpg">
     <div class="container">
     <h1 class="text-center mt-2 mb-4"> TM Schools Dashboard</h1>
-    <img class="img-fluid" id="banner" src="https://26c28395-e43c-4a89-b186-ab5bb78c8c66-00-2i79fv7dsyyor.sisko.replit.dev/static/tm-corp-logo.svg"
-    height="320" >
-    <h2 class="text-center mt-4 mb-4">About TM Schools Dashboard</h2>
     <p class="lead">
       This interactive dashboard allows users to explore information about different schools in Malaysia effortlessly. Users can search for schools by entering the school code or school name, and the app provides details such as the school code, school name, TM Interim status, VSAT availability, and TM Hybrid status.
     </p>
@@ -42,5 +42,6 @@
       <button class="btn btn-primary btn-lg">Search</button>
         </div>
         </div>
+    {% include "footer.html" %}
   </body>
 </html>
