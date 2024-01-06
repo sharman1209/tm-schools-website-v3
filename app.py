@@ -24,7 +24,7 @@ JOBS = [
     'id': 4,
     'title': 'Backend Engineer',
     'location': 'San Francisco',
-    'salary' : 'Rs. 13,00,000'
+    'salary' : 'Rs. 15,00,000'
   }
 ]
 @app.route("/")
