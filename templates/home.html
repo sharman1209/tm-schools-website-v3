@@ -15,7 +15,7 @@
   </head>
   <body>
     {% include 'nav.html' %}
-    <img class="img-fluid" id="banner" src="https://26c28395-e43c-4a89-b186-ab5bb78c8c66-00-2i79fv7dsyyor.sisko.replit.dev/static/education-bg.jpg">
+    <img class="img-fluid" id="banner" src="/static/education-bg.jpg">
     <div class="container">
     <h1 class="text-center mt-2 mb-4"> TM Schools Dashboard</h1>
     <p class="lead">
@@ -27,20 +27,17 @@
       <p>
         Enter the school code to get more information about the school.
       </p>
+      <h2>
+        School Name: 
+      </h2>
+        <p>
+          Enter the school name to get more information about the school.
+        </p>
       <div> 
         {% for job in jobs %}
           {% include 'jobitem.html' %}
         {% endfor %}
       </div>
-        <div>
-      <button class="btn btn-primary btn-lg">Search</button>
-        </div>
-    <h2>
-      School Name:
-    </h2>
-      <div>
-      <button class="btn btn-primary btn-lg">Search</button>
-        </div>
         </div>
     {% include "footer.html" %}
   </body>
