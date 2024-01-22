@@ -54,7 +54,7 @@
                     if(isset($_REQUEST['search']))
                     {
 
-                        $connection = mysqli_connect("aws.connect.psdb.cloud", "oegmu7fkapga3wwu6aet", "pscale_pw_aGt8OFVbcuIbODwDq34i50F9X7cxmBOFuWHSDZ1Vkk2", "tm_schools");
+                      
                         $filtervalue = $_GET['search'];
                         $filterdata = "SELECT * FROM tm_schools WHERE CONCAT(KOD SEKOLAH, SENARAI SEKOLAH MALAYSIA, SEKOLAH INTERIM, SEKOLAH VSAT, SEKOLAH HYBRID) LIKE '%$filtervalue%'"
                         $filterdata_run = mysqli_query($connection, $filterdata);
