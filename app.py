@@ -6,7 +6,7 @@ app = Flask(__name__)
 @app.route("/")
 def hello_world():
   jobs = load_jobs_from_db()
-  return render_template('home.html', 
+  return render_template('home.php', 
                          jobs=jobs)
 
 @app.route("/api/jobs")
