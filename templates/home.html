@@ -33,7 +33,7 @@
       <!-- Your body content goes here -->
       <form method="post" class="mt-3" id="searchForm">
           <div class="input-group">
-              <input type="text" name="school_query" class="form-control" placeholder="e.g ABA2058 or Sekolah Kebangsaan Jati or Jati" required
+              <input type="text" name="school_query" class="form-control" placeholder="ABA2058 or Sekolah Kebangsaan Jati or Jati" required
                       id="schoolCodeInput" value="{{ request.form['school_query'] if request.form['school_query'] else '' }}">
               <!-- Suggestions dropdown -->
               <div class="dropdown">
