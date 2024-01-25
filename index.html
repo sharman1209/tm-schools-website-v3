@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Results</title>
+</head>
+<body>
+
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="text-center">Search Results</h4>
+            </div>
+            <div class="card-body">
+                <form action="" method="GET">
+                    <input type="text" name="search" value="{{ search_query }}" required class="form-control" placeholder="Search">
+                    <div class="mt-2">
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary">Search</button>
+                        </div>
+                    </div>
+                </form>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>KOD SEKOLAH</th>
+                            <th>SENARAI SEKOLAH MALAYSIA</th>
+                            <th>SEKOLAH INTERIM</th>
+                            <th>SEKOLAH VSAT</th>
+                            <th>SEKOLAH HYBRID</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in filter_data %}
+                            <tr>
+                                <td>{{ row[0] }}</td>
+                                <td>{{ row[1] }}</td>
+                                <td>{{ row[2] }}</td>
+                                <td>{{ row[3] }}</td>
+                                <td>{{ row[4] }}</td>
+                            </tr>
+                        {% endfor %}
+
+                        {% if not filter_data %}
+                            <tr>
+                                <td colspan="5">No record found</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

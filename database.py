@@ -13,11 +13,30 @@ engine = create_engine(
 
 def load_jobs_from_db():
   with engine.connect() as conn:
-    result = conn.execute(text("select * from jobs"))
+    result = conn.execute(text("select * from tm_schools"))
     jobs = []
     for row in result.all():
         jobs.append(row._asdict())
     return jobs
+
+def fetch_school_data(school_code):
+    with engine.connect() as conn:
+        result = conn.execute(text("""
+            SELECT `KOD SEKOLAH`, `SENARAI SEKOLAH MALAYSIA`, `SEKOLAH INTERIM`, `SEKOLAH VSAT`, `SEKOLAH HIBRID`
+            FROM tm_schools
+            WHERE `KOD SEKOLAH` = :school_code
+        """), {"school_code": school_code})
+
+        row = result.fetchone()
+
+    if row is not None:
+        # Manually construct the dictionary
+        column_names = ["KOD SEKOLAH", "SENARAI SEKOLAH MALAYSIA", "SEKOLAH INTERIM", "SEKOLAH VSAT", "SEKOLAH HIBRID"]
+        school_data = {column: row[i] for i, column in enumerate(column_names)}
+        return school_data
+    else:
+        print(f"No result found for school code: {school_code}")
+        return None
 
 def load_job_from_db(id):
   with engine.connect() as conn:
