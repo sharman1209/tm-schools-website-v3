@@ -1,7 +1,7 @@
 <!DOCTYPE php>
 <html>
   <head>
-    <title>TM Schools Dashboard</title>
+    <title>TM Schools Search</title>
     <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
@@ -10,28 +10,73 @@
     {% include 'nav.html' %}
     {% include 'banner.html' %}
     <div class="container">
-    <h1 class="text-center mt-2 mb-4"> TM Schools Search
+    <h1 class="text-center mt-1 mb-1"> TM Schools Search
     </h1>
     <p class="lead">
-      This interactive searching tool allows users to explore information about different schools in Malaysia effortlessly. Users can search for schools by entering the School Code or School Name, and the application provides details such as the School Code, School Name, TM Interim Status, and TM Hybrid Status.
+      This interactive searching tool allows users to explore information about different schools in Malaysia effortlessly. Users can search for schools by entering the School Code or School Name, and the application provides details such as the School Code, School Name, TM Interim Availability, VSAT Availability, and TM Hybrid Availability
     </p>
         
+      <!-- Include jQuery from CDN -->
+      <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+      <!-- Your other head elements go here -->
+      </head>
+      <body>
+
+      <!-- Your body content goes here -->
       <form method="post" class="mt-3" id="searchForm">
           <div class="input-group">
-              <input type="text" name="school_code" class="form-control" placeholder="Enter School Code" required
-                     value="{{ request.form['school_code'] if request.form['school_code'] else '' }}">
+              <input type="text" name="school_query" class="form-control" placeholder="Enter School Code or Name" required
+                      id="schoolCodeInput" value="{{ request.form['school_query'] if request.form['school_query'] else '' }}">
+              <!-- Suggestions dropdown -->
+              <div class="dropdown">
+                  <ul class="dropdown-menu" id="suggestionsDropdown"></ul>
+              </div>
           </div>
-
           <div class="mt-2 text-center">
               <button type="submit" class="btn btn-primary">Search</button>
               <a href="/" class="btn btn-danger ml-2">Reset</a>
           </div>
       </form>
 
+      <!-- JavaScript to handle suggestions -->
+      <script>
+          function fetchSuggestions() {
+              var query = document.getElementById('schoolCodeInput').value;
 
+              // Make AJAX request to /get_suggestions
+              $.ajax({
+                  url: '/get_suggestions',
+                  method: 'POST',
+                  data: { query: query },
+                  success: function (data) {
+                      // Process and update the dropdown
+                      updateDropdown(data);
+                  },
+                  error: function () {
+                      console.error('Error fetching suggestions.');
+                  }
+              });
+          }
 
+          // Add this logic to your JavaScript code to update the dropdown
+          function updateDropdown(suggestions) {
+              var dropdownMenu = document.querySelector('#suggestionsDropdown');
+              dropdownMenu.innerHTML = '';  // Clear existing suggestions
 
-      {% if request.method == 'POST' %}
+              // Append new suggestions to the dropdown
+              suggestions.forEach(function (suggestion) {
+                  var listItem = document.createElement('li');
+                  listItem.classList.add('dropdown-item');
+                  listItem.textContent = suggestion;
+                  dropdownMenu.appendChild(listItem);
+              });
+          }
+      </script>
+      </body>
+      </html>
+
+      {% if request.method == 'POST' and request.form['school_query'] %}
           {% if result %}
               <h2 class="text-center mt-2 mb-4">Search Result</h2>
               <div class="table-responsive">
@@ -46,24 +91,26 @@
                           </tr>
                       </thead>
                       <tbody>
-                          <tr>
-                              <td>{{ result['KOD SEKOLAH'] }}</td>
-                              <td>{{ result['SENARAI SEKOLAH MALAYSIA'] }}</td>
-                              <td>{{ result['SEKOLAH INTERIM'] }}</td>
-                              <td>{{ result['SEKOLAH VSAT'] }}</td>
-                              <td>{{ result['SEKOLAH HYBRID'] }}</td>
-                          </tr>
+                          {% for school_data in result %}
+                              <tr>
+                                  <td>{{ school_data['KOD SEKOLAH'] }}</td>
+                                  <td>{{ school_data['SENARAI SEKOLAH MALAYSIA'] }}</td>
+                                  <td>{{ school_data['SEKOLAH INTERIM'] }}</td>
+                                  <td>{{ school_data['SEKOLAH VSAT'] }}</td>
+                                  <td>{{ school_data['SEKOLAH HIBRID'] }}</td>
+                              </tr>
+                          {% endfor %}
                       </tbody>
                   </table>
               </div>
+              <p class="text-success">Results found for '{{ request.form['school_query'] }}'</p>
           {% else %}
               <div class="alert alert-danger" role="alert">
-                  <strong>No result found</strong> for the provided school code <strong>'{{ request.form['school_code'] }}'<strong>
+                  <strong>No result found</strong> for <strong>'{{ request.form['school_query'] }}'</strong>
               </div>
           {% endif %}
       {% endif %}
 
-      
     </div>
     
     {% include "footer.html" %}

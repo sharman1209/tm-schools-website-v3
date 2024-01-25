@@ -19,33 +19,43 @@ def load_jobs_from_db():
         jobs.append(row._asdict())
     return jobs
 
-def fetch_school_data(school_code):
-    with engine.connect() as conn:
-        result = conn.execute(text("""
-            SELECT `KOD SEKOLAH`, `SENARAI SEKOLAH MALAYSIA`, `SEKOLAH INTERIM`, `SEKOLAH VSAT`, `SEKOLAH HIBRID`
-            FROM tm_schools
-            WHERE `KOD SEKOLAH` = :school_code
-        """), {"school_code": school_code})
-
-        row = result.fetchone()
-
-    if row is not None:
-        # Manually construct the dictionary
-        column_names = ["KOD SEKOLAH", "SENARAI SEKOLAH MALAYSIA", "SEKOLAH INTERIM", "SEKOLAH VSAT", "SEKOLAH HIBRID"]
-        school_data = {column: row[i] for i, column in enumerate(column_names)}
-        return school_data
-    else:
-        print(f"No result found for school code: {school_code}")
-        return None
-
-def load_job_from_db(id):
+def fetch_school_data(school_query):
   with engine.connect() as conn:
-    result = conn.execute(text("select * from jobs where id = :val" ), {"val": id})
-    rows = result.all()
-    if len(rows) == 0:
-      return None
-    else:
-      return rows[0]._asdict()
+      sql = text("""
+          SELECT `KOD SEKOLAH`, `SENARAI SEKOLAH MALAYSIA`, `SEKOLAH INTERIM`, `SEKOLAH VSAT`, `SEKOLAH HIBRID`
+          FROM tm_schools
+          WHERE `KOD SEKOLAH` LIKE :school_query OR `SENARAI SEKOLAH MALAYSIA` LIKE :school_query
+      """)
+      result = conn.execute(sql, {"school_query": f"%{school_query}%"})
+      rows = result.fetchall()
+
+      if rows:
+          # Manually construct the list of dictionaries
+          column_names = ["KOD SEKOLAH", "SENARAI SEKOLAH MALAYSIA", "SEKOLAH INTERIM", "SEKOLAH VSAT", "SEKOLAH HIBRID"]
+          school_data_list = [{column: row[i] for i, column in enumerate(column_names)} for row in rows]
+          return school_data_list
+      else:
+          print(f"No result found for: {school_query}")
+          return None
+
+
+# Function to get suggestions from the database
+def fetch_suggestions(school_query):
+    with engine.connect() as conn:
+        sql = text("SELECT `KOD SEKOLAH` FROM tm_schools WHERE `KOD SEKOLAH` LIKE :school_query")
+        result = conn.execute(sql, {'school_query': f'%{school_query}%'})
+        suggestions = [row['KOD SEKOLAH'] for row in result]
+        print(suggestions)  # Add this line for debugging
+    return suggestions
+
+
+def load_job_from_db():
+  with engine.connect() as conn:
+    result = conn.execute(text("select * from tm_schools"))
+    jobs = []
+    for row in result.all():
+        jobs.append(row._asdict())
+    return jobs
 
 def add_application_to_db(job_id, data):
   with engine.connect() as conn:

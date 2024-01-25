@@ -1,5 +1,5 @@
 from flask import Flask, render_template, jsonify, request
-from database import load_jobs_from_db, load_job_from_db, add_application_to_db, fetch_school_data
+from database import load_jobs_from_db, load_job_from_db, add_application_to_db, fetch_school_data, fetch_suggestions
 
 app = Flask(__name__)
 
@@ -9,18 +9,19 @@ def hello_world():
   return render_template('home.html', 
                          jobs=jobs)
 
-# Assuming you have the fetch_data function implemented
+@app.route("/get_suggestions", methods=["POST"])
+def get_suggestions():
+    query = request.form.get('query', '')
+    suggestions = fetch_suggestions(query)
+    return jsonify(suggestions)
 
 @app.route("/", methods=["GET", "POST"])
 def search_school():
     result = None
-
     if request.method == "POST":
-        school_code = request.form.get("school_code")
-        result = fetch_school_data(school_code)
-
+        school_query = request.form.get("school_query")
+        result = fetch_school_data(school_query)
     return render_template("home.html", result=result)
-
 
 @app.route("/api/jobs")
 def list_jobs():
